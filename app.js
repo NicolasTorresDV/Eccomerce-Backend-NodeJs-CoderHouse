@@ -1,28 +1,16 @@
-import ProductManager from "./classes/ProductManager.js";
+import {__dirname} from "./utils.js";
 import express from "express";
+import routerApi from "./routes/index.js";
 
-const pm = new ProductManager();
-const PORT = 8080;
-const myApp = express();
+const PORT = 8080
+const myApp = express()
 
-myApp.use(express.urlencoded({extended:true}));
+myApp.use(express.json())
+myApp.use(express.urlencoded({extended:true}))
+myApp.use("/static" , express.static(__dirname + "public"))
 
-
-myApp.get('/products', async (req,res) => {
-    const { limit } = req.query;
-    if (!limit) {
-        res.json( await pm.getProducts())
-    }else{
-        let newProducts = await pm.getProducts();
-        res.json(newProducts.slice(0,limit));
-    }
-});
-
-myApp.get('/products/:pid', async (req,res) => {
-    const { pid } = req.params;
-    res.json( await pm.getProductById(parseInt(pid)))
-});
+routerApi(myApp);
 
 myApp.listen(PORT, () => {
     console.log("Mi port:" + PORT)
-  }) 
+})

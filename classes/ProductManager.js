@@ -13,13 +13,11 @@ class ProductManager{
         }
     }
 
-    async getProducts(){
+    getProducts(){
 
-        if (await this.checkFileExists(this.path)) {
+        if (this.checkFileExists(this.path)) {
 
-            const productsJSON = await fs.readFile(this.path, 'utf8');
-    
-            productsArr = JSON.parse(productsJSON);
+            const productsJSON = fs.readFileSync(this.path.toString(),'utf-8');
     
             return JSON.parse(productsJSON);
           }
@@ -28,6 +26,7 @@ class ProductManager{
     }
     
     getProductById(id) {
+        this.products = JSON.parse(fs.readFileSync(this.path.toString(),'utf-8'));
 
         const productSearched = this.products.find((product) => product.id === id);
     
@@ -37,9 +36,9 @@ class ProductManager{
 
       
 
-    addProduct(title,description,price,thumbnail,code,stock){
+    addProduct(product){
 
-        let product = {title,description,price,thumbnail,code,stock}
+
         if (!this.isValidProduct(product)) {
 
             throw new Error("All fields are required.");
@@ -47,18 +46,19 @@ class ProductManager{
           }
 
         this.products = JSON.parse(fs.readFileSync(this.path.toString(),'utf-8'));
-        const existingProduct = this.products.find((existingProduct) => existingProduct.code === code);
+        const existingProduct = this.products.find((existingProduct) => existingProduct.code === product.code);
+
 
         if (existingProduct) {
-            return "Code is repeated";
+            return {message: "Code is repeated"};
         }
 
         const newID = this.products.length === 0 ? 1 : this.products[this.products.length - 1].id + 1;
-
-        let newProduct = new Product(newID,title,description,price,thumbnail,code,stock)
+        let newProduct = new Product(newID, product.title, product.description, product.price, product.thumbnail, product.code, product.stock)
         this.products.push(newProduct)
         fs.writeFileSync(this.path.toString(), JSON.stringify(this.products));
         
+
         return newProduct      
     }
 
