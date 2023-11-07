@@ -22,7 +22,7 @@ productsRouter.get('/', async (req,res) => {
 productsRouter.post('/', async (req, res) => {
     const body = req.body;
     try {
-        let newProduct = await pm.addProduct(body);
+        const newProduct = await pm.addProduct(body);
         res.status(201).json(newProduct)
     } catch (error) {
         res.status(500).json({message: error.message});

@@ -7,7 +7,7 @@ const cm = new CartManager()
 
 cartsRouter.post("/", async (req,res) => {
     try {
-        let newCart = await cm.addCart();
+        const newCart = await cm.addCart();
         res.status(201).json(newCart)
     } catch (error) {
         res.status(500).json({message: error.message});
